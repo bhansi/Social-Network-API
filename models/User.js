@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const thoughtSchema = require('./Thought');
 
 const userSchema = new Schema(
   {
@@ -19,8 +20,14 @@ const userSchema = new Schema(
         message: 'Invalid email address format.'
       }
     },
-    thoughts: [ thoughtSchema ],
-    friends: [ userSchema ]
+    thoughts: {
+      type: Schema.Types.ObjectId,
+      ref: 'thought',
+    },
+    friends: {
+      type: Schema.Types.ObjectId,
+      ref: 'user',
+    }
   },
   {
     toJSON: {
