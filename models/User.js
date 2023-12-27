@@ -20,14 +20,18 @@ const userSchema = new Schema(
         message: 'Invalid email address format.'
       }
     },
-    thoughts: {
-      type: Schema.Types.ObjectId,
-      ref: 'thought',
-    },
-    friends: {
-      type: Schema.Types.ObjectId,
-      ref: 'user',
-    }
+    thoughts: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'thought',
+      }
+    ],
+    friends: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'user',
+      }
+    ]
   },
   {
     toJSON: {
