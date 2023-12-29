@@ -19,7 +19,7 @@ const reactionSchema = new Schema(
       type: Date,
       default: Date.now,
       get: (date) => date.toLocaleDateString('en-us')
-    },
+    }
   },
   {
     toJSON: {
