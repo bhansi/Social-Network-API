@@ -1,49 +1,50 @@
 const connection = require('../config/connection');
 const { User, Thought } = require('../models');
-const { getRandomUsername, getRandomEmail } = require('./data');
+const { getRandomUsername, getRandomEmail, getRandomThoughts, getRandomFriends } = require('./data');
 
 connection.on('error', (err) => err);
 
 connection.once('open', async () => {
   console.info('Connected to database.');
 
-  let users = await connection.db.listCollections({ name: 'user' }).toArray();
-  if (users.length) {
-    await connection.dropCollection('user');
+  let db_users = await connection.db.listCollections({ name: 'users' }).toArray();
+  if (db_users.length) {
+    await connection.dropCollection('users');
   }
 
-  let thoughts = await connection.db.listCollections({ name: 'thought' }).toArray();
-  if (thoughts.length) {
-    await connection.dropCollection('thought');
+  let db_thoughts = await connection.db.listCollections({ name: 'thoughts' }).toArray();
+  if (db_thoughts.length) {
+    await connection.dropCollection('thoughts');
   }
 
-  users = [];
-  thoughts = [];
+  let usernames = [];
 
-  // Loop 20 times -- add students to the students array
-  for (let i = 0; i < 5; i++) {
-    const username = getRandomUsername();
-    const email = getRandomEmail(username);
-
-    users.push({
-      username,
-      email,
-      thoughts,
-    });
+  for (let i = 0; i < 10; i++) {
+    usernames.push(getRandomUsername(usernames));
   }
 
-  // Add students to the collection and await the results
-  await Student.collection.insertMany(students);
+  let users = [];
+  let thoughts = [];
 
-  // Add courses to the collection and await the results
-  await Course.collection.insertOne({
-    courseName: 'UCLA',
-    inPerson: false,
-    students: [...students],
+  usernames.forEach((username) => {
+    let user_thoughts = getRandomThoughts(username, usernames.filter((x) => x != username));
+    let user_friends = getRandomFriends(usernames.filter((x) => x != username));
+    let email = getRandomEmail(username);
+
+    thoughts.push(...user_thoughts);
+    users.push(
+      {
+        username,
+        email,
+        thoughts: [ ...user_thoughts ],
+        friends: [ ...user_friends ]
+      }
+    );
   });
 
-  // Log out the seed data to indicate what should appear in the database
-  console.table(students);
+  await Thought.collection.insertMany(thoughts);
+  await User.collection.insertMany(users);
+
   console.info('Database successfully seeded.');
   process.exit(0);
 });
