@@ -1,6 +1,12 @@
 const connection = require('../config/connection');
 const { User, Thought } = require('../models');
-const { getRandomUsername, getRandomEmail, getRandomThoughts, getRandomFriends } = require('./data');
+const {
+  getRandomUsername,
+  getRandomEmail,
+  getRandomThoughts,
+  getRandomFriends,
+  pairThoughts
+} = require('./data');
 
 connection.on('error', (err) => err);
 
@@ -45,11 +51,17 @@ connection.once('open', async () => {
   await User.collection.insertMany(users);
 
   for (let user of users) {
-    let user_friends = getRandomFriends(users.filter((x) => x._id != user._id));
+    let user_friends = getRandomFriends(user._id, users);
+    let user_thoughts = pairThoughts(user.username, thoughts);
 
     await User.updateOne(
       { _id: user._id },
-      { $set: { friends: user_friends }}
+      {
+        $set: {
+          friends: user_friends,
+          thoughts: user_thoughts
+        }
+      }
     );
   }
 

@@ -155,7 +155,9 @@ module.exports = {
 
     return user_thoughts;
   },
-  getRandomFriends: (users) => {
+  getRandomFriends: (id, users) => {
+    users = users.filter((user) => id != user._id);
+
     let num_friends = Math.floor(Math.random() * 4);
     let friends = [];
 
@@ -164,5 +166,9 @@ module.exports = {
     }
 
     return friends;
+  },
+  pairThoughts: (username, thoughts) => {
+    thoughts = thoughts.filter((thought) => username === thought.username);
+    return thoughts.map((thought) => thought._id);
   }
 }
