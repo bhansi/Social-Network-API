@@ -28,7 +28,6 @@ connection.once('open', async () => {
 
   usernames.forEach((username) => {
     let user_thoughts = getRandomThoughts(username, usernames.filter((x) => x != username));
-    let user_friends = getRandomFriends(usernames.filter((x) => x != username));
     let email = getRandomEmail(username);
 
     thoughts.push(...user_thoughts);
@@ -36,14 +35,23 @@ connection.once('open', async () => {
       {
         username,
         email,
-        thoughts: [ ...user_thoughts ],
-        friends: [ ...user_friends ]
+        thoughts: [],
+        friends: []
       }
     );
   });
 
   await Thought.collection.insertMany(thoughts);
   await User.collection.insertMany(users);
+
+  for (let user of users) {
+    let user_friends = getRandomFriends(users.filter((x) => x._id != user._id));
+
+    await User.updateOne(
+      { _id: user._id },
+      { $set: { friends: user_friends }}
+    );
+  }
 
   console.info('Database successfully seeded.');
   process.exit(0);

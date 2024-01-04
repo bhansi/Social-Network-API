@@ -155,12 +155,12 @@ module.exports = {
 
     return user_thoughts;
   },
-  getRandomFriends: (usernames) => {
+  getRandomFriends: (users) => {
     let num_friends = Math.floor(Math.random() * 4);
     let friends = [];
 
     for (let i = 0; i < num_friends; i++) {
-      friends.push(usernames.splice(getRandomIndex(usernames), 1)[0]);
+      friends.push(users.splice(getRandomIndex(users), 1)[0]._id);
     }
 
     return friends;
