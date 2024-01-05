@@ -31,8 +31,42 @@ module.exports = {
   },
   createUser: async (req, res) => {
     try {
-      const user = await User.create(req.body);
-      res.json(user);
+      res.json(await User.create(req.body));
+    }
+    catch (err) {
+      console.error(err);
+      res.status(500).json(err);
+    }
+  },
+  updateUser: async (req, res) => {
+    try {
+      const user = await User.findOneAndUpdate(
+        { _id: req.params.id },
+        { ...req.body }
+      );
+
+      if (!user) {
+        res.status(404).json({ message: 'No user found with that id.' });
+      }
+      else {
+        res.status(200).json(user);
+      }
+    }
+    catch (err) {
+      console.error(err);
+      res.status(500).json(err);
+    }
+  },
+  deleteUser: async (req, res) => {
+    try {
+      const user = await User.findOneAndDelete({ _id: req.params.id });
+
+      if (!user) {
+        res.status(404).json({ message: 'No user found with that id.' });
+      }
+      else {
+        res.status(200).json(user);
+      }
     }
     catch (err) {
       console.error(err);
