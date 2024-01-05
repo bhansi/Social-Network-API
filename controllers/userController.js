@@ -80,6 +80,9 @@ module.exports = {
       if (!user) {
         res.status(404).json({ message: 'No user found with that id.' });
       }
+      else if (req.params.userId === req.params.friendId) {
+        res.status(500).json({ message: 'Cannot add yourself to your friends list.' });
+      }
       else if (user.friends.includes(req.params.friendId)) {
         res.status(500).json({ message: `This user is already in ${user.username}'s friend list.` });
       }
@@ -88,6 +91,34 @@ module.exports = {
           friends: [ ...user.friends, req.params.friendId ]
         });
         res.status(200).json(user);
+      }
+    }
+    catch (err) {
+      console.error(err);
+      res.status(500).json(err);
+    }
+  },
+  removeFriend: async (req, res) => {
+    try {
+      const user = await User.findOne({ _id: req.params.userId });
+
+      if (!user) {
+        res.status(404).json({ message: 'No user found with that id.' });
+      }
+      else {
+        let index = user.friends.indexOf(req.params.friendId);
+
+        if (index >= 0) {
+          user.friends.splice(index, 1);
+          await user.updateOne({
+            friends: user.friends
+          });
+
+          res.status(200).json(user);
+        }
+        else {
+          res.status(500).json({ message: `Friend not found in ${user.username}'s friends list.` })
+        }
       }
     }
     catch (err) {
