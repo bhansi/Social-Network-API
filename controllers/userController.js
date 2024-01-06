@@ -105,24 +105,31 @@ module.exports = {
   },
   removeFriend: async (req, res) => {
     try {
-      const user = await User.findOne({ _id: req.params.userId });
+      const user1 = await User.findOne({ _id: req.params.userId });
+      const user2 = await User.findOne({ _id: req.params.friendId });
 
-      if (!user) {
+      if (!(user1 || user2)) {
         res.status(404).json({ message: 'No user found with that id.' });
       }
       else {
-        let index = user.friends.indexOf(req.params.friendId);
+        let index1 = user1.friends.indexOf(req.params.friendId);
+        let index2 = user2.friends.indexOf(req.params.userId);
 
-        if (index >= 0) {
-          user.friends.splice(index, 1);
-          await user.updateOne({
-            friends: user.friends
+        if (index1 >= 0) {
+          user1.friends.splice(index1, 1);
+          user2.friends.splice(index2, 1);
+
+          await user1.updateOne({
+            friends: user1.friends
+          });
+          await user2.updateOne({
+            friends: user2.friends
           });
 
-          res.status(200).json(user);
+          res.status(200).json({ message: 'Successfully removed friend.' });
         }
         else {
-          res.status(500).json({ message: `Friend not found in ${user.username}'s friends list.` })
+          res.status(500).json({ message: 'These users are not friends.' });
         }
       }
     }
