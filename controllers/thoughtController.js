@@ -100,5 +100,33 @@ module.exports = {
       console.error(err);
       res.status(500).json(err);
     }
+  },
+  deleteReaction: async (req, res) => {
+    try {
+      const thought = await Thought.findOne({ _id: req.params.thoughtId });
+
+      if (!thought) {
+        res.status(404).json({ message: 'No thought found with that id.' });
+      }
+      else {
+        let index = thought.reactions.findIndex((reaction) => reaction.reactionId == req.params.reactionId);
+
+        if (index >= 0) {
+          thought.reactions.splice(index, 1);
+          await thought.updateOne({
+            reactions: thought.reactions
+          });
+
+          res.status(200).json(thought);
+        }
+        else {
+          res.status(500).json({ message: 'Reaction not found in specified thought.' })
+        }
+      }
+    }
+    catch (err) {
+      console.error(err);
+      res.status(500).json(err);
+    }
   }
 };
