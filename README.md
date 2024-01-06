@@ -17,14 +17,18 @@ This program uses MongoDB, Mongoose, and Express to serve a backend that mimics 
 #### Install
 1. Clone this repository to your directory of choice.
 2. Change directory into the newly cloned repository.
-3. Run 'npm i' on the command line.
+3. Run 'npm i' in the command line to install the necessary packages and dependencies.
 4. (optional) Install [Insomnia](https://insomnia.rest/download) to easily perform CRUD operations on the database.
 
 #### Setup
 1. Run 'npm run seed' to create and seed the database.
 
-#### Running the App
-1. Run 'npm start' to start the server.
+## Usage
+
+[This video]() demonstrates the seeding process, running the server, and performing all of the CRUD operations outlined below.
+
+#### Using the App
+1. Run 'npm start' in the command line to start the server.
 2. Open [Insomnia](https://insomnia.rest/download) (or your app of choice) to perform the following operations on the database:
   ##### GET Operations
     a. '/api/users' gets all users
@@ -44,8 +48,6 @@ This program uses MongoDB, Mongoose, and Express to serve a backend that mimics 
     b. '/api/users/:userId/friends/:friendId' removes a friend from a user's friend list
     c. '/api/thoughts/:id' deletes a thought
     d. '/api/thoughts/:thoughtId/reactions/:reactionId' deletes a reaction from a thought's reaction list
-
-## Usage
 
 ## Questions
 [GitHub](https://github.com/bhansi)
