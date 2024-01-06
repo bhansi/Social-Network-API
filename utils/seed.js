@@ -51,15 +51,26 @@ connection.once('open', async () => {
   await User.collection.insertMany(users);
 
   for (let user of users) {
-    let user_friends = getRandomFriends(user._id, users);
-    let user_thoughts = pairThoughts(user.username, thoughts);
+    let new_friends = getRandomFriends(user._id, users);
+    let new_thoughts = pairThoughts(user.username, thoughts);
 
-    await User.updateOne(
-      { _id: user._id },
+    let user1 = await User.findOne({ _id: user._id });
+
+    for (let friend_id of new_friends) {
+      let user2 = await User.findOne({ _id: friend_id });
+
+      await user2.updateOne({
+        $set: {
+          friends: [ ...user2.friends, user1._id ]
+        }
+      });
+    }
+
+    await user1.updateOne(
       {
         $set: {
-          friends: user_friends,
-          thoughts: user_thoughts
+          friends: [ ...user1.friends, ...new_friends ],
+          thoughts: new_thoughts
         }
       }
     );

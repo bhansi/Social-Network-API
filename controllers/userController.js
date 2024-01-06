@@ -75,22 +75,27 @@ module.exports = {
   },
   addFriend: async (req, res) => {
     try {
-      const user = await User.findOne({ _id: req.params.userId });
+      const user1 = await User.findOne({ _id: req.params.userId });
+      const user2 = await User.findOne({ _id: req.params.friendId });
 
-      if (!user) {
+      if (!(user1 || user2)) {
         res.status(404).json({ message: 'No user found with that id.' });
       }
       else if (req.params.userId === req.params.friendId) {
         res.status(500).json({ message: 'Cannot add yourself to your friends list.' });
       }
-      else if (user.friends.includes(req.params.friendId)) {
-        res.status(500).json({ message: `This user is already in ${user.username}'s friend list.` });
+      else if (user1.friends.includes(req.params.friendId)) {
+        res.status(500).json({ message: `These users are already friends.` });
       }
       else {
-        await user.updateOne({
-          friends: [ ...user.friends, req.params.friendId ]
+        await user1.updateOne({
+          friends: [ ...user1.friends, req.params.friendId ]
         });
-        res.status(200).json(user);
+        await user2.updateOne({
+          friends: [ ...user2.friends, req.params.userId ]
+        });
+
+        res.status(200).json({ message: 'Successfully added friend.' });
       }
     }
     catch (err) {
