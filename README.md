@@ -25,7 +25,7 @@ This program uses MongoDB, Mongoose, and Express to serve a backend that mimics 
 
 ## Usage
 
-[This video]() demonstrates running the server and performing all of the CRUD operations outlined below.
+[This video](https://drive.google.com/file/d/15Ch9QaDxNzcfCJoROBK09qKXfyy3S86d/view?usp=sharing) demonstrates running the server and performing all of the CRUD operations outlined below.
 
 #### Using the App
 1. Run 'npm start' in the command line to start the server.
